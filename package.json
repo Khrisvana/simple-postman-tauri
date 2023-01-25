@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.2.0",
-    "axios": "^1.2.4",
     "vue": "^3.2.45",
     "vue-json-pretty": "^2.2.3"
   },

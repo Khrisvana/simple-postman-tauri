@@ -9,9 +9,14 @@ const router: any = createRouter({
             component: () => import("../components/layouts/Default.vue"),
             children: [
                 {
-                    path: "",
-                    name: "Home",
-                    component: () => import('../views/Home.vue'),
+                  path: "",
+                  name: "Home",
+                  component: () => import('../views/Home.vue'),
+                }, 
+                {
+                    path: ":id",
+                    name: "Request",
+                    component: () => import('../views/Request.vue'),
                 }
             ]
         }

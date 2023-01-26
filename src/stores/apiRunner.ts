@@ -1,14 +1,108 @@
 import { defineStore } from 'pinia'
+import { readTextFile, BaseDirectory, createDir, writeFile } from '@tauri-apps/api/fs';
+import { getClient } from "@tauri-apps/api/http";
 
 export const useApiRunnerStore = defineStore('apiRunner', {
-    state: () => ({
-        result: '',
-        json: {},
+    state: (): ApiRunnerState => ({
+        currentRequestResult: null,
+        currentRequestConfig: {
+            key: null,
+            name: 'New Request',
+            method: 'get',
+            url: ''
+        },
+        fullData: null,
     }),
     getters: {
         //computed
     },
     actions: {
         //methods
+        async readFiles() {
+            this.fullData = JSON.parse(await readTextFile('./Simple Postman/data.json', { dir: BaseDirectory.Document }))
+        },
+        async createDataFolder() {
+            try {
+                await createDir("Simple Postman", {
+                    dir: BaseDirectory.Document,
+                    recursive: true
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async storeDataFile() {
+            try {
+                console.log(this.currentRequestConfig);
+
+                if (this.fullData) { 
+                    this.fullData?.map((item: any, index: any) => {
+                        if (item.key == this.currentRequestConfig.key) {
+                            this.fullData[index] = this.currentRequestConfig
+                        }
+                    })
+
+                }
+                console.log(this.fullData);
+
+                await this.createDataFolder();
+                await writeFile(
+                    {
+                        contents: JSON.stringify(this.fullData),
+                        path: `./Simple Postman/data.json`
+                    },
+                    {
+                        dir: BaseDirectory.Document
+                    }
+                )
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async runApi() { 
+            let response = {} as Response;
+            
+            const client = await getClient();
+            if (this.currentRequestConfig.method === "get") {
+                response = await client.get(this.currentRequestConfig.url);
+            } else if (this.currentRequestConfig.method === "post") {
+                response = await client.get(this.currentRequestConfig.url);
+            }
+            
+            this.currentRequestResult = response.data
+        },
+        addNewRequest() {
+            this.fullData?.push({
+                key: Date.now(),
+                name: 'TEst',
+                method: 'get',
+                url: ''
+            })
+        },
+        currentPageConfig(id: any) {
+            let data: any = [];
+            if (this.fullData) {
+                data = this.fullData.find((item: any) => item.key == id);
+            }
+            console.log(data);
+            this.currentRequestConfig = {...data} 
+        }
     }
 })
+
+interface ApiRunnerState {
+    currentRequestResult: any,
+    currentRequestConfig: RequestConfig | any,
+    fullData: any,
+}
+
+interface RequestConfig {
+    key: Number | null,
+    name: String,
+    method: String,
+    url: String
+}
+
+interface Response {
+    data: Object,
+}

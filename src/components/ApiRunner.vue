@@ -1,28 +1,15 @@
 <script setup lang="ts">
-import { getClient } from "@tauri-apps/api/http";
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
-
-const props = defineProps({
-  modelValue: {
-    type: [String],
-    default: ''
-  }
-});
-const emit = defineEmits(["result", "update:modelValue"]);
+import { useApiRunnerStore } from '../stores/apiRunner';
+ 
+const store = useApiRunnerStore(); 
+const { currentRequestConfig } = storeToRefs(store); 
 
 let method = ref("get");
 
 async function runUrl() {
-  console.log(props.modelValue);
-  let response = null;
-  const client = await getClient();
-  if (method.value === "get") {
-    response = await client.get(props.modelValue);
-  } else if (method.value === "post") {
-    response = await client.get(props.modelValue);
-  }
-
-  emit("result", response?.data);
+  await store.runApi()
 }
 </script>
 
@@ -43,7 +30,7 @@ async function runUrl() {
         text-sm
         shadow-sm
       "
-      v-model="method"
+      v-model="currentRequestConfig.method"
     >
       <option value="get">GET</option>
       <option value="method">POST</option>
@@ -62,8 +49,7 @@ async function runUrl() {
         text-sm
         shadow-sm
       "
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      v-model="currentRequestConfig.url"
     />
     <button
       class="

@@ -1,27 +1,34 @@
 <script setup lang="ts">
-import { getClient } from '@tauri-apps/api/http';
+import { getClient } from "@tauri-apps/api/http";
 import { ref } from "vue";
 
-const emit = defineEmits(['result']);
-let url = ref("");
+const props = defineProps({
+  modelValue: {
+    type: [String],
+    default: ''
+  }
+});
+const emit = defineEmits(["result", "update:modelValue"]);
+
 let method = ref("get");
 
 async function runUrl() {
+  console.log(props.modelValue);
   let response = null;
   const client = await getClient();
-  if (method.value === 'get') {
-    response = await client.get(url.value);  
-  } else if (method.value === 'post') {
-    response = await client.get(url.value);  
+  if (method.value === "get") {
+    response = await client.get(props.modelValue);
+  } else if (method.value === "post") {
+    response = await client.get(props.modelValue);
   }
- 
-  emit('result', response?.data);
-} 
+
+  emit("result", response?.data);
+}
 </script>
 
 
 <template>
-  <div class="flex gap-1 sticky top-2 bg-white z-10">
+  <form class="flex gap-1 sticky top-2 bg-white z-10" @submit.prevent="runUrl()">
     <select
       name=""
       id=""
@@ -55,13 +62,21 @@ async function runUrl() {
         text-sm
         shadow-sm
       "
-      v-model="url"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
     <button
-      class="rounded bg-sky-500 text-sm text-white px-3 py-2"
-      @click.prevent="runUrl()"
+      class="
+        rounded
+        bg-sky-500
+        text-sm text-white
+        px-3
+        py-2
+        hover:border-sky-700 hover:bg-sky-700
+      "
+      type="submit"
     >
       Run
     </button>
-  </div>
+  </form>
 </template>

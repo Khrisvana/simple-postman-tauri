@@ -13,6 +13,19 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "window": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": ["$APP/*", "$DOCUMENT/*", "$DOCUMENT/Simple Postman/*"]
+      },
+      "path": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      },
       "http": {
         "all": true,
         "request": true,

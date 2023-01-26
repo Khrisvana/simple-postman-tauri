@@ -5,7 +5,7 @@
   <div class="w-60 h-screen shadow-md bg-white px-1 z-10 fixed">
     <ul class="relative">
       <li class="relative">
-        <a
+        <router-link
           class="
             flex
             items-center
@@ -22,14 +22,14 @@
             duration-300
             ease-in-out
           "
-          href="#!"
+          :to="{name: 'Home'}"
           data-mdb-ripple="true"
           data-mdb-ripple-color="dark"
-          >Dummy Link 1</a
+          >Dummy Link 1</router-link
         >
       </li>
       <li class="relative">
-        <a
+        <router-link
           class="
             flex
             items-center
@@ -46,36 +46,12 @@
             duration-300
             ease-in-out
           "
-          href="#!"
+          :to="{name: 'Home'}"
           data-mdb-ripple="true"
           data-mdb-ripple-color="dark"
-          >Dummy link 2</a
+          >Dummy Link 2</router-link
         >
-      </li>
-      <li class="relative">
-        <a
-          class="
-            flex
-            items-center
-            text-sm
-            py-4
-            px-6
-            h-12
-            overflow-hidden
-            text-gray-700 text-ellipsis
-            whitespace-nowrap
-            rounded
-            hover:text-gray-900 hover:bg-gray-100
-            transition
-            duration-300
-            ease-in-out
-          "
-          href="#!"
-          data-mdb-ripple="true"
-          data-mdb-ripple-color="dark"
-          >Dummy link 2</a
-        >
-      </li>
+      </li> 
     </ul>
   </div>
 </template>

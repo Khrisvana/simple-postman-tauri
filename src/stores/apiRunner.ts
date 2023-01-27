@@ -32,9 +32,7 @@ export const useApiRunnerStore = defineStore('apiRunner', {
             }
         },
         async storeDataFile() {
-            try {
-                console.log(this.currentRequestConfig);
-
+            try { 
                 if (this.fullData) { 
                     this.fullData?.map((item: any, index: any) => {
                         if (item.key == this.currentRequestConfig.key) {
@@ -42,10 +40,15 @@ export const useApiRunnerStore = defineStore('apiRunner', {
                         }
                     })
 
-                }
-                console.log(this.fullData);
-
+                } 
                 await this.createDataFolder();
+                await this.saveJsonFile();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async saveJsonFile() {
+            try {
                 await writeFile(
                     {
                         contents: JSON.stringify(this.fullData),
@@ -71,13 +74,14 @@ export const useApiRunnerStore = defineStore('apiRunner', {
             
             this.currentRequestResult = response.data
         },
-        addNewRequest() {
+        async addNewRequest() {
             this.fullData?.push({
                 key: Date.now(),
-                name: 'TEst',
+                name: 'New Request',
                 method: 'get',
                 url: ''
             })
+            await this.saveJsonFile();
         },
         currentPageConfig(id: any) {
             let data: any = [];

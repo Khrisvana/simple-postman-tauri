@@ -3,7 +3,7 @@
   Next Progress: Add new request and change its name
 */
 
-import { computed, onMounted, watch as vueWatcher } from "vue";
+import { computed, onBeforeUnmount, onMounted, onUnmounted, watch as vueWatcher } from "vue";
 import { register, unregister, isRegistered } from '@tauri-apps/api/globalShortcut';
 import { appWindow } from "@tauri-apps/api/window";
 import { useApiRunnerStore } from '../stores/apiRunner';
@@ -19,8 +19,8 @@ const store = useApiRunnerStore();
 const currentRequestResult = computed(() => store.currentRequestResult)
  
 const unlisten = async () => {
+  let commandRegistered = await isRegistered('CommandOrControl+S');
   await appWindow.onFocusChanged(async ({ payload: focused }) => {
-    let commandRegistered = await isRegistered('CommandOrControl+S');
     if (focused) {
       if (!commandRegistered) {
         await register('CommandOrControl+S', async () => {await store.storeDataFile()});
@@ -33,9 +33,8 @@ const unlisten = async () => {
   })
 };
 
-unlisten() 
-
 onMounted(async () => {  
+  await unlisten() 
   if (!store.fullData) {
     await store.readFiles()
   }
@@ -44,6 +43,11 @@ onMounted(async () => {
 
 vueWatcher(route, async (newQuestion, oldQuestion) => {
     store.currentPageConfig(newQuestion.params.id)
+})
+
+onBeforeUnmount(async () => {
+  // let commandRegistered = await isRegistered('CommandOrControl+S');
+  await unregister('CommandOrControl+S'); 
 })
 </script>
 

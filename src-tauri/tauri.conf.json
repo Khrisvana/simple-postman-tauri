@@ -81,6 +81,7 @@
         "height": 600,
         "resizable": true,
         "title": "todo-list-tauri",
+        "fileDropEnabled": false,
         "width": 800
       }
     ]

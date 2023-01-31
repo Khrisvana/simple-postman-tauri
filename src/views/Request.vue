@@ -1,54 +1,60 @@
-<script setup lang="ts"> 
+<script setup lang="ts">
 /* 
   Next Progress: Add new request and change its name
 */
 
-import { computed, onBeforeUnmount, onMounted, onUnmounted, watch as vueWatcher } from "vue";
-import { register, unregister, isRegistered } from '@tauri-apps/api/globalShortcut';
+import { computed, onBeforeUnmount, onMounted, watch as vueWatcher } from "vue";
+import {
+  register,
+  unregister,
+  isRegistered,
+} from "@tauri-apps/api/globalShortcut";
 import { appWindow } from "@tauri-apps/api/window";
-import { useApiRunnerStore } from '../stores/apiRunner';
+import { useApiRunnerStore } from "../stores/apiRunner";
 
 //components
 import ApiRunner from "../components/ApiRunner.vue";
 import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css"; 
+import "vue-json-pretty/lib/styles.css";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const store = useApiRunnerStore(); 
-const currentRequestResult = computed(() => store.currentRequestResult)
- 
+const store = useApiRunnerStore();
+const currentRequestResult = computed(() => store.currentRequestResult);
+
 const unlisten = async () => {
-  let commandRegistered = await isRegistered('CommandOrControl+S');
+  let commandRegistered = await isRegistered("CommandOrControl+S");
   await appWindow.onFocusChanged(async ({ payload: focused }) => {
     if (focused) {
       if (!commandRegistered) {
-        await register('CommandOrControl+S', async () => {await store.storeDataFile()});
+        await register("CommandOrControl+S", async () => {
+          await store.storeDataFile();
+        });
       }
     } else {
       if (commandRegistered) {
-        await unregister('CommandOrControl+S'); 
+        await unregister("CommandOrControl+S");
       }
     }
-  })
+  });
 };
 
-onMounted(async () => {  
-  await unlisten() 
+onMounted(async () => {
+  await unlisten();
   if (!store.fullData) {
-    await store.readFiles()
+    await store.readFiles();
   }
-    store.currentPageConfig(route.params.id)
-})
+  store.currentPageConfig(route.params.id);
+});
 
 vueWatcher(route, async (newQuestion, oldQuestion) => {
-    store.currentPageConfig(newQuestion.params.id)
-})
+  store.currentPageConfig(newQuestion.params.id);
+});
 
 onBeforeUnmount(async () => {
   // let commandRegistered = await isRegistered('CommandOrControl+S');
-  await unregister('CommandOrControl+S'); 
-})
+  await unregister("CommandOrControl+S");
+});
 </script>
 
 <template>
@@ -65,8 +71,13 @@ onBeforeUnmount(async () => {
         relative
       "
     >
-      <ApiRunner/>
-      <vue-json-pretty :data="currentRequestResult" showLineNumber showIcon class="mt-3" />
+      <ApiRunner />
+      <vue-json-pretty
+        :data="currentRequestResult"
+        showLineNumber
+        showIcon
+        class="mt-3"
+      />
     </div>
   </div>
 </template>

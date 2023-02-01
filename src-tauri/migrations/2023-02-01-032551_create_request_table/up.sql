@@ -1,0 +1,8 @@
+-- Your SQL goes here
+
+CREATE TABLE IF NOT EXISTS request (
+    id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    url VARCHAR NOT NULL,
+    method VARCHAR NOT NULL DEFAULT 'GET'
+)

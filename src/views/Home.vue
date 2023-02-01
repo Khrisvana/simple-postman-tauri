@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "@vue/runtime-core";
-import NestedDraggable from "../components/inputs/NestedDraggable.vue";
+import NestedDraggable from "../components/sidebar/NestedDraggable.vue";
 import { useSidebarStore } from "../stores/sidebar";
 
 const store = useSidebarStore();
@@ -15,7 +15,7 @@ let elements = computed({
   get() {
     return store.elements;
   },
-  set(value: Array<Elements>) {
+  set(value: any) {
     store.updateElements(value);
   },
 });
@@ -34,8 +34,6 @@ let elements = computed({
       relative
     "
   >
-    <NestedDraggable class="col-8" :list="elements" />
-
-    <div class="bg-gray-500 h-60 p-3"></div>
+    <NestedDraggable class="w-full" v-model="elements" />
   </div>
 </template>

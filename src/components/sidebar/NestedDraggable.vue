@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import { computed } from "@vue/runtime-core";
 import draggable from "vuedraggable";
 
+const emit = defineEmits(["update:modelValue"]);
+
 let props = defineProps({
-  list: {
+  modelValue: {
     default: null,
     type: Array,
-    required: true,
   },
 });
 </script>
 
 <template>
   <draggable
-    v-bind="dragOption"
     tag="ul"
     class="dragArea px-3"
-    :list="list"
+    :list="props.modelValue"
     item-key="name"
+    group="name"
   >
     <template #item="{ element }">
       <li>

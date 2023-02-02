@@ -1,6 +1,7 @@
 use diesel::prelude::*;
+use serde::Serialize;
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize, Debug)]
 pub struct Request {
     pub id: i32,
     pub name: String,

@@ -1,9 +1,19 @@
 <script lang="ts" setup>
-import { computed } from "@vue/runtime-core";
+import { computed, onMounted, ref } from "@vue/runtime-core";
 import NestedDraggable from "../components/sidebar/NestedDraggable.vue";
 import { useSidebarStore } from "../stores/sidebar";
+import { invoke } from '@tauri-apps/api/tauri';
 
 const store = useSidebarStore();
+const invoke = window.__TAURI__.invoke;
+
+let queryRes = ref(null);
+
+onMounted(async () => {
+  console.log(await invoke('get_requests'));
+  
+  queryRes.value = await invoke('get_requests')
+})
 
 interface Elements {
   id: Number;
@@ -35,5 +45,9 @@ let elements = computed({
     "
   >
     <NestedDraggable class="w-full" v-model="elements" />
+
+    <pre>
+      {{ queryRes }}
+    </pre>
   </div>
 </template>

@@ -1,8 +1,8 @@
 -- Your SQL goes here
 
-CREATE TABLE IF NOT EXISTS request (
+CREATE TABLE IF NOT EXISTS requests (
     id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    url VARCHAR NOT NULL,
+    name VARCHAR,
+    url VARCHAR,
     method VARCHAR NOT NULL DEFAULT 'GET'
 )

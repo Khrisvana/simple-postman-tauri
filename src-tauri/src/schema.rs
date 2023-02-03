@@ -1,10 +1,10 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    request (id) {
+    requests (id) {
         id -> Integer,
-        name -> Text,
-        url -> Text,
+        name -> Nullable<Text>,
+        url -> Nullable<Text>,
         method -> Text,
     }
 }

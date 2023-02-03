@@ -3,7 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-#[macro_use]
 extern crate diesel;
 extern crate diesel_migrations;
 

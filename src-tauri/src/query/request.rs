@@ -6,7 +6,6 @@ use crate::db::establish_connection;
 use crate::db::models;
 use crate::schema;
 
-pub struct Request {}
 
 #[derive(Debug, Serialize)]
 pub struct RequestQueryResult {
@@ -28,43 +27,41 @@ impl fmt::Display for Methods {
     }
 }
 
-impl Request {
-    pub fn get_requests() -> RequestQueryResult {
-        use schema::requests::dsl::*;
+pub fn get_requests() -> RequestQueryResult {
+    use schema::requests::dsl::*;
 
-        let connection = &mut establish_connection();
-        // let query = schema::request::dsl::request.table();
+    let connection = &mut establish_connection();
+    // let query = schema::request::dsl::request.table();
 
-        let result = requests
-            .load::<models::Request>(connection)
-            .expect("Error loading requests");
+    let result = requests
+        .load::<models::Request>(connection)
+        .expect("Error loading requests");
 
-        RequestQueryResult { list: result }
-    }
+    RequestQueryResult { list: result }
+}
 
-    pub fn store_request() -> models::Request {
-        let request = schema::requests::dsl::requests;
-        let request_id = schema::requests::dsl::id;
+pub fn store_request() -> models::Request {
+    let request = schema::requests::dsl::requests;
+    let request_id = schema::requests::dsl::id;
 
-        let connection = &mut establish_connection();
+    let connection = &mut establish_connection();
 
-        let new_request = models::Request {
-            id: 0,
-            method: Methods::GET.to_string(),
-            name: None,
-            url: None,
-        };
+    let new_request = models::Request {
+        id: 0,
+        method: Methods::GET.to_string(),
+        name: Some("New Request".to_string()),
+        url: None,
+    };
 
-        diesel::insert_into(request)
-            .values(&new_request)
-            .execute(connection)
-            .expect("Error saving request");
+    diesel::insert_into(request)
+        .values(&new_request)
+        .execute(connection)
+        .expect("Error saving request");
 
-        let result = request
-            .order(request_id.desc())
-            .first::<models::Request>(connection)
-            .unwrap();
+    let result = request
+        .order(request_id.desc())
+        .first::<models::Request>(connection)
+        .unwrap();
 
-        result 
-    }
+    result 
 }

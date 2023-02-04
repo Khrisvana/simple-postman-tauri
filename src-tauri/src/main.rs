@@ -24,7 +24,10 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            cmd::get_requests
+            cmd::get_requests,
+            cmd::create_new_request,
+            cmd::get_folders,
+            cmd::create_new_folder,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

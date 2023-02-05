@@ -3,7 +3,7 @@ use crate::query;
 use crate::db::models;
 
 #[command]
-pub fn get_requests() -> query::request::RequestQueryResult {
+pub fn get_requests() -> Vec<(models::Folder, Vec<models::Request>)> {
     let result = query::request::get_requests();
 
     result
@@ -19,6 +19,13 @@ pub fn create_new_request() -> models::Request {
 #[command]
 pub fn get_folders() -> query::folder::FolderQueryResult {
     let result = query::folder::get_folders();
+
+    result
+}
+
+#[command]
+pub fn get_folders_with_child() -> Vec<(models::Folder, (models::Folder))> {
+    let result = query::folder::get_folder_childs();
 
     result
 }

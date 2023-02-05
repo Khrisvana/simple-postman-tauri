@@ -9,10 +9,10 @@ const invoke = window.__TAURI__.invoke;
 
 let queryRes = ref(null);
 
-onMounted(async () => {
-  console.log(await invoke('get_requests'));
+onMounted(async () => { 
   
   queryRes.value = await invoke('get_requests')
+  console.log(queryRes.value);
 })
 
 interface Elements {

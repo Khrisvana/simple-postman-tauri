@@ -1,32 +1,62 @@
+use diesel::alias;
 use diesel::prelude::*;
+use diesel::query_dsl::methods::FilterDsl;
+use diesel::sql_query;
 use serde::Serialize;
 
 use crate::db::establish_connection;
-use crate::db::models;
-use crate::schema;
+use crate::db::models::{Folder};
+use crate::schema::folders::{self, parent_id};
 
 #[derive(Debug, Serialize)]
 pub struct FolderQueryResult {
-    list: Vec<models::Folder>,
+    list: Vec<Folder>,
+}
+
+pub struct JoinResult {
+    folder: Vec<(Folder, Folder)>,
 }
 
 pub fn get_folders() -> FolderQueryResult {
-    let folder = schema::folders::dsl::folders;
+    let folder = folders::dsl::folders;
     let connection = &mut establish_connection();
 
     let result = folder
-        .load::<models::Folder>(connection)
+        .load::<Folder>(connection)
         .expect("Error loading requests");
 
     FolderQueryResult { list: result }
 }
 
-pub fn create_new_folder() -> models::Folder {
-    let folder = schema::folders::dsl::folders;
-    let folder_id = schema::folders::dsl::id;
+pub fn get_folder_childs() -> Vec<(Folder, Folder)> {
+    let folder_alias = alias!(folders as the_folder);
+
     let connection = &mut establish_connection();
 
-    let new_folder = models::Folder {
+    // let parent = folders::table
+    //     .filter(parent_id.eq(None))
+    //     .get_results::<Folder>(connection); 
+
+    let result = folders::table
+        .inner_join(folder_alias.on(folders::id.eq(folder_alias.field(folders::parent_id).assume_not_null())))
+        .select((folders::all_columns, folder_alias.fields(folders::all_columns)))
+        .load::<(Folder, Folder)>(connection)
+        .unwrap();
+ 
+    // for (folder, parent) in parents {
+
+    // }
+    
+
+    result
+} 
+
+pub fn create_new_folder() -> Folder {
+    let folder = folders::dsl::folders;
+    let folder_id = folders::dsl::id;
+    let connection = &mut establish_connection();
+
+    let new_folder = Folder {
         id: 0,
         name: "New Folder".to_string(),
         parent_id: None,
@@ -38,9 +68,9 @@ pub fn create_new_folder() -> models::Folder {
         .expect("Error saving new folder");
 
     let result = folder
-            .order(folder_id.desc())
-            .first::<models::Folder>(connection)
-            .unwrap();
+        .order(folder_id.desc())
+        .first::<Folder>(connection)
+        .unwrap();
 
     result
 }

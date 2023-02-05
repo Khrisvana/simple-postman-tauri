@@ -14,6 +14,7 @@ diesel::table! {
         name -> Nullable<Text>,
         url -> Nullable<Text>,
         method -> Text,
+        folder_id -> Nullable<Integer>,
     }
 }
 

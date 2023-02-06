@@ -29,6 +29,7 @@ fn main() {
             cmd::get_folders,
             cmd::create_new_folder,
             cmd::get_folders_with_child,
+            cmd::map_requests,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

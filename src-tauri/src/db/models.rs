@@ -4,7 +4,7 @@ use serde::Serialize;
 use crate::schema::requests;
 use crate::schema::folders;
 
-#[derive(Identifiable, Queryable, Insertable, PartialEq, Debug, Serialize)] 
+#[derive(Identifiable, Queryable, Insertable, PartialEq, Debug, Serialize, Clone)] 
 #[diesel(table_name = folders)]
 pub struct Folder {
     pub id: i32,

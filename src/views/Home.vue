@@ -11,7 +11,7 @@ let queryRes = ref(null);
 
 onMounted(async () => { 
   
-  queryRes.value = await invoke('get_requests')
+  queryRes.value = await invoke('map_requests')
   console.log(queryRes.value);
 })
 

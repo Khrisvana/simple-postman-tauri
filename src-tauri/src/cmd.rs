@@ -3,8 +3,15 @@ use crate::query;
 use crate::db::models;
 
 #[command]
-pub fn get_requests() -> Vec<(models::Folder, Vec<models::Request>)> {
+pub fn get_requests() -> Vec<query::request::RequestResult> {
     let result = query::request::get_requests();
+
+    result
+}
+
+#[command]
+pub fn map_requests() -> Vec<query::request::MappedResult> {
+    let result = query::request::map_requests();
 
     result
 }

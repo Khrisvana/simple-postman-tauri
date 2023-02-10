@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { onMounted } from "@vue/runtime-core"
 import draggable from "vuedraggable"
 import SidebarItem from "./SidebarItem.vue"
 import SidebarNoitem from "./SidebarNoitem.vue"
@@ -10,6 +11,10 @@ let props = defineProps({
         default: null,
         type: Array,
     },
+})
+
+onMounted(async () => {
+    await console.log(props.modelValue);
 })
 </script>
 
@@ -23,21 +28,15 @@ let props = defineProps({
     >
         <template #item="{ element }">
             <li>
-                <details>
+                <details :open="true">
                     <summary>
                         <SidebarItem :item="element" />
                     </summary>
-                    <template v-if="element.request.length > 0">
-                        <SidebarItem
-                            v-for="request in element.request"
-                            :key="request.id"
-                            :item="request"
-                        />
-                    </template>
-                    <template v-else>
+                    <nested-draggable v-if="element.request && element.request.length > 0" :list="element.request" />
+                    <!-- <template v-if="element.request && element.request.length == 0">
                         <SidebarNoitem/>
-                    </template>
-                    <nested-draggable :list="element.items" />
+                    </template> -->
+                    <nested-draggable v-if="element.items && element.items.length >= 0" :list="element.items" />
                 </details>
             </li>
         </template>

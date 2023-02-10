@@ -3,8 +3,8 @@ use crate::query;
 use crate::db::models;
 
 #[command]
-pub fn get_requests() -> Vec<query::request::RequestResult> {
-    let result = query::request::get_requests();
+pub fn get_request(id: i32) -> models::Request {
+    let result = query::request::get_request(id);
 
     result
 }

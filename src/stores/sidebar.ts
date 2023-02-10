@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { invoke } from '@tauri-apps/api/tauri';
-const invoke = window.__TAURI__.invoke;
 
 export const useSidebarStore = defineStore("sidebar", {
   state: (): SidebarState => ({

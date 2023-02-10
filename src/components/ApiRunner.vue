@@ -25,15 +25,15 @@ async function runUrl() {
         block
         rounded
         bg-white
-        border-2 border-slate-300
+        border border-slate-300
         focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500
         text-sm
         shadow-sm
       "
       v-model="currentRequestConfig.method"
     >
-      <option value="get">GET</option>
-      <option value="method">POST</option>
+      <option value="GET">GET</option>
+      <option value="POST">POST</option>
     </select>
     <input
       type="text"
@@ -43,7 +43,7 @@ async function runUrl() {
         block
         rounded
         bg-white
-        border-slate-300
+        border border-slate-300
         w-full
         focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500
         text-sm

@@ -24,7 +24,7 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            cmd::get_requests,
+            cmd::get_request,
             cmd::create_new_request,
             cmd::get_folders,
             cmd::create_new_folder,

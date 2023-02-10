@@ -39,16 +39,16 @@ const unlisten = async () => {
   });
 };
 
-// onMounted(async () => {
-//   await unlisten();
-//   if (!store.fullData) {
-//     await store.readFiles();
-//   }
-//   store.currentPageConfig(route.params.id);
-// });
+onMounted(async () => {
+  // await unlisten();
+  // if (!store.fullData) {
+  //   await store.readFiles();
+  // }
+  store.currentPageConfig(parseInt(route.params.id.toString()));
+});
 
-vueWatcher(route, async (newQuestion, oldQuestion) => {
-  store.currentPageConfig(newQuestion.params.id);
+vueWatcher(route, async (newValue, oldValue) => {
+  store.currentPageConfig(parseInt(newValue.params.id.toString()));
 });
 
 // onBeforeUnmount(async () => {
@@ -72,7 +72,7 @@ vueWatcher(route, async (newQuestion, oldQuestion) => {
       "
     >
       <ApiRunner />
-      <vue-json-pretty
+      <VueJsonPretty
         :data="currentRequestResult"
         showLineNumber
         showIcon

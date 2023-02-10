@@ -6,6 +6,7 @@ import {
   writeFile,
 } from "@tauri-apps/api/fs";
 import { getClient } from "@tauri-apps/api/http";
+import { invoke } from '@tauri-apps/api/tauri';
 
 export const useApiRunnerStore = defineStore("apiRunner", {
   state: (): ApiRunnerState => ({
@@ -91,13 +92,9 @@ export const useApiRunnerStore = defineStore("apiRunner", {
       });
       await this.saveJsonFile();
     },
-    currentPageConfig(id: any) {
-      let data: any = [];
-      if (this.fullData) {
-        data = this.fullData.find((item: any) => item.key == id);
-      }
-      console.log(data);
-      this.currentRequestConfig = { ...data };
+    async currentPageConfig(id: any) { 
+      let data: RequestConfig = await invoke('get_request', {id: id})
+      this.currentRequestConfig = { ...data }; 
     },
   },
 });
@@ -109,7 +106,8 @@ interface ApiRunnerState {
 }
 
 interface RequestConfig {
-  key: Number | null;
+  id: Number | null;
+  folder_id: Number | null;
   name: String;
   method: String;
   url: String;

@@ -1,20 +1,14 @@
 use diesel::alias;
 use diesel::prelude::*;
-use diesel::query_dsl::methods::FilterDsl;
-use diesel::sql_query;
 use serde::Serialize;
 
 use crate::db::establish_connection;
 use crate::db::models::{Folder};
-use crate::schema::folders::{self, parent_id};
+use crate::schema::folders::{self};
 
 #[derive(Debug, Serialize)]
 pub struct FolderQueryResult {
     list: Vec<Folder>,
-}
-
-pub struct JoinResult {
-    folder: Vec<(Folder, Folder)>,
 }
 
 pub fn get_folders() -> FolderQueryResult {

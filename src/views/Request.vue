@@ -39,22 +39,22 @@ const unlisten = async () => {
   });
 };
 
-onMounted(async () => {
-  await unlisten();
-  if (!store.fullData) {
-    await store.readFiles();
-  }
-  store.currentPageConfig(route.params.id);
-});
+// onMounted(async () => {
+//   await unlisten();
+//   if (!store.fullData) {
+//     await store.readFiles();
+//   }
+//   store.currentPageConfig(route.params.id);
+// });
 
 vueWatcher(route, async (newQuestion, oldQuestion) => {
   store.currentPageConfig(newQuestion.params.id);
 });
 
-onBeforeUnmount(async () => {
-  // let commandRegistered = await isRegistered('CommandOrControl+S');
-  await unregister("CommandOrControl+S");
-});
+// onBeforeUnmount(async () => {
+//   // let commandRegistered = await isRegistered('CommandOrControl+S');
+//   await unregister("CommandOrControl+S");
+// });
 </script>
 
 <template>

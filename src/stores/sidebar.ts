@@ -1,50 +1,37 @@
 import { defineStore } from "pinia";
+import { invoke } from '@tauri-apps/api/tauri';
+const invoke = window.__TAURI__.invoke;
 
 export const useSidebarStore = defineStore("sidebar", {
   state: (): SidebarState => ({
-    elements: [
-      {
-        id: 1,
-        name: "Shrek",
-        elements: [],
-      },
-      {
-        id: 2,
-        name: "Fiona",
-        elements: [
-          {
-            id: 4,
-            name: "Lord Farquad",
-            elements: [],
-          },
-          {
-            id: 5,
-            name: "Prince Charming",
-            elements: [],
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: "Donkey",
-        elements: [],
-      },
-    ],
+    records: [],
   }),
   getters: {},
   actions: {
-    updateElements(payload: Array<Elements>) {
-      this.elements = payload;
+    async getRecords() {
+      this.records = await invoke('map_requests');
+    },
+    updateElements(payload: Array<Record>) {
+      this.records = payload;
     },
   },
 });
 
 interface SidebarState {
-  elements: Array<Elements>;
+  records: Array<Record>;
 }
 
-interface Elements {
+interface Record {
   id: Number;
+  parent_id: Number | null;
   name: String;
-  elements: Array<Elements>;
+  requests: Array<Request>;
+  items: Array<Record>;
+}
+
+interface Request {
+  id: Number;
+  method: String;
+  String: String;
+  url: String;
 }

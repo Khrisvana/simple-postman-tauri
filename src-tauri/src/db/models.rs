@@ -21,7 +21,7 @@ pub struct Folder {
 //     pub parent_id: Option<i32>,
 // }
 
-#[derive(Identifiable, Queryable, Associations, PartialEq, Debug, Serialize)] 
+#[derive(Identifiable, Queryable, Associations, PartialEq, Debug, Clone, Serialize)] 
 #[diesel(belongs_to(Folder))]
 #[diesel(table_name = requests)]
 pub struct Request {

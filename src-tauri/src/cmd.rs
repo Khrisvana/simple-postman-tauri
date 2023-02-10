@@ -31,7 +31,7 @@ pub fn get_folders() -> query::folder::FolderQueryResult {
 }
 
 #[command]
-pub fn get_folders_with_child() -> Vec<(models::Folder, (models::Folder))> {
+pub fn get_folders_with_child() -> Vec<(models::Folder, models::Folder)> {
     let result = query::folder::get_folder_childs();
 
     result

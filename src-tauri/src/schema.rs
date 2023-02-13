@@ -4,6 +4,7 @@ diesel::table! {
     folders (id) {
         id -> Integer,
         name -> Text,
+        order_number -> Integer,
         parent_id -> Nullable<Integer>,
     }
 }
@@ -14,6 +15,7 @@ diesel::table! {
         name -> Nullable<Text>,
         url -> Nullable<Text>,
         method -> Text,
+        order_number -> Integer,
         folder_id -> Nullable<Integer>,
     }
 }

@@ -4,11 +4,12 @@ use serde::Serialize;
 use crate::schema::requests;
 use crate::schema::folders;
 
-#[derive(Identifiable, Queryable, Insertable, PartialEq, Debug, Serialize, Clone)] 
+#[derive(Identifiable, Queryable, Insertable, PartialEq, PartialOrd, Debug, Serialize, Clone)] 
 #[diesel(table_name = folders)]
 pub struct Folder {
     pub id: i32,
     pub name: String,
+    pub order_number: i32,
     pub parent_id: Option<i32>,
 } 
 
@@ -21,7 +22,7 @@ pub struct Folder {
 //     pub parent_id: Option<i32>,
 // }
 
-#[derive(Identifiable, Queryable, Associations, PartialEq, Debug, Clone, Serialize)] 
+#[derive(Identifiable, Queryable, Associations, PartialEq, PartialOrd, Debug, Clone, Serialize)] 
 #[diesel(belongs_to(Folder))]
 #[diesel(table_name = requests)]
 pub struct Request {
@@ -29,6 +30,7 @@ pub struct Request {
     pub name: Option<String>,
     pub url: Option<String>,
     pub method: String,
+    pub order_number: i32,
     pub folder_id: Option<i32>
 }
 
@@ -38,5 +40,6 @@ pub struct NewRequest {
     pub name: Option<String>,
     pub url: Option<String>,
     pub method: String,
+    pub order_number: i32,
     pub folder_id: Option<i32>
 }

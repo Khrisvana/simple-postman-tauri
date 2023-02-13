@@ -1,17 +1,30 @@
 <script lang="ts" setup>
 import { onMounted } from "@vue/runtime-core"
-import draggable from "vuedraggable"
-import SidebarItem from "./SidebarItem.vue"
-import SidebarNoitem from "./SidebarNoitem.vue"
+import { storeToRefs } from "pinia";
+import Sortable from "sortablejs";
+import draggable from "vuedraggable";
+import { useSidebarStore } from "../../stores/sidebar";
+import SidebarItem from "./SidebarItem.vue";
+import SidebarNoitem from "./SidebarNoitem.vue";
 
 const emit = defineEmits(["update:modelValue"])
+const store = useSidebarStore();
+const { records } = storeToRefs(store);
 
 let props = defineProps({
     modelValue: {
         default: null,
         type: Array,
-    },
+    }, 
+    group: {
+        default: 'name',
+        type: String
+    }
 })
+
+function test() {
+    console.log(records.value)
+}
 
 onMounted(async () => {
     await console.log(props.modelValue);
@@ -21,10 +34,13 @@ onMounted(async () => {
 <template>
     <draggable
         tag="ul"
-        class="pl-3"
+        class="pl-3 border-l"
+        style="min-height: 1px;"
         :list="props.modelValue"
         item-key="name"
-        group="name"
+        :group="group"
+        @change="test"
+        :emptyInsertThreshold="70"
     >
         <template #item="{ element }">
             <li>
@@ -32,11 +48,8 @@ onMounted(async () => {
                     <summary>
                         <SidebarItem :item="element" />
                     </summary>
-                    <nested-draggable v-if="element.request && element.request.length > 0" :list="element.request" />
-                    <!-- <template v-if="element.request && element.request.length == 0">
-                        <SidebarNoitem/>
-                    </template> -->
-                    <nested-draggable v-if="element.items && element.items.length >= 0" :list="element.items" />
+                    <nested-draggable v-if="element.items && element.items.length >= 0" :list="element.items" :group="group"/>
+                    <nested-draggable v-if="element.request && element.request.length >= 0" :list="element.request" group="request"/>
                 </details>
             </li>
         </template>

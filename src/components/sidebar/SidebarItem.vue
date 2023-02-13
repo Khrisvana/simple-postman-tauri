@@ -15,6 +15,7 @@ onMounted(async () => {})
     <span
         v-if="!item.method"
         class="
+            folder
             flex
             items-center
             text-sm
@@ -71,11 +72,12 @@ onMounted(async () => {})
     <router-link
         v-else
         class="
+            request
             flex
             items-center
             text-sm
             py-2
-            pl-3
+            pl-2
             h-auto
             overflow-hidden
             text-gray-700 text-ellipsis

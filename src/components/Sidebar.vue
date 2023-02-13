@@ -16,7 +16,14 @@ let sidebarValue: any = ref({
 
 onMounted(async () => {
   await store.getRecords();
+  console.log(records.value);
+  
 });
+
+function changeOrder() {
+  console.log(records);
+    
+}
 
 // let getFullData = computed(() => store.fullData ?? []);
 
@@ -72,7 +79,7 @@ onMounted(async () => {
       ><span class="uppercase font-medium">home</span></router-link
     >
     <ul class="relative">
-      <NestedDraggable class="w-full" v-model="records" />
+      <NestedDraggable class="w-full" v-model="records" group="folder"/>
 
       <!-- <li class="relative">
         <span

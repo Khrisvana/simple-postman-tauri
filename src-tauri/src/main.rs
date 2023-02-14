@@ -25,11 +25,11 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             cmd::get_request,
-            cmd::create_new_request,
+            // cmd::create_new_request,
             cmd::get_folders,
             cmd::create_new_folder,
             cmd::get_folders_with_child,
-            cmd::map_requests,
+            cmd::request_list,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

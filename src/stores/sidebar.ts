@@ -8,7 +8,7 @@ export const useSidebarStore = defineStore("sidebar", {
   getters: {},
   actions: {
     async getRecords() {
-      this.records = await invoke('map_requests');
+      this.records = await invoke('request_list');
     },
     updateElements(payload: Array<Record>) {
       this.records = payload;

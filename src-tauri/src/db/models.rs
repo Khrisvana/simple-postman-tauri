@@ -22,24 +22,23 @@ pub struct Folder {
 //     pub parent_id: Option<i32>,
 // }
 
-#[derive(Identifiable, Queryable, Associations, PartialEq, PartialOrd, Debug, Clone, Serialize)] 
-#[diesel(belongs_to(Folder))]
+#[derive(Identifiable, Queryable, PartialEq, PartialOrd, Debug, Clone, Serialize)]
 #[diesel(table_name = requests)]
 pub struct Request {
     pub id: i32,
-    pub name: Option<String>,
+    pub name: String,
     pub url: Option<String>,
-    pub method: String,
+    pub method: Option<String>,
     pub order_number: i32,
-    pub folder_id: Option<i32>
+    pub parent_id: Option<i32>
 }
 
 #[derive( Insertable,  Debug)] 
 #[diesel(table_name = requests)]
 pub struct NewRequest {
-    pub name: Option<String>,
+    pub name: String,
     pub url: Option<String>,
-    pub method: String,
+    pub method: Option<String>,
     pub order_number: i32,
-    pub folder_id: Option<i32>
+    pub parent_id: Option<i32>
 }

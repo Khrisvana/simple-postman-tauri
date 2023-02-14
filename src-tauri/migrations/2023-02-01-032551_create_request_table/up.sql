@@ -2,9 +2,9 @@
 
 CREATE TABLE IF NOT EXISTS requests (
     id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR,
+    name VARCHAR NOT NULL,
     url VARCHAR,
-    method VARCHAR NOT NULL DEFAULT 'GET',
+    method VARCHAR,
     order_number INTEGER NOT NULL DEFAULT 1,
-    folder_id INTEGER
+    parent_id INTEGER
 )

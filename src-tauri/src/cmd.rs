@@ -10,18 +10,18 @@ pub fn get_request(id: i32) -> models::Request {
 }
 
 #[command]
-pub fn map_requests() -> Vec<query::request::MappedResult> {
-    let result = query::request::map_requests();
+pub fn request_list() -> Vec<query::request::MappedResult> {
+    let result = query::request::request_list();
 
     result
 }
 
-#[command]
-pub fn create_new_request() -> models::Request {
-    let result = query::request::store_request();
+// #[command]
+// pub fn create_new_request() -> models::Request {
+//     let result = query::request::store_request();
 
-    result
-}
+//     result
+// }
 
 #[command]
 pub fn get_folders() -> query::folder::FolderQueryResult {

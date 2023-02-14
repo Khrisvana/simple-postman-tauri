@@ -12,11 +12,11 @@ diesel::table! {
 diesel::table! {
     requests (id) {
         id -> Integer,
-        name -> Nullable<Text>,
+        name -> Text,
         url -> Nullable<Text>,
-        method -> Text,
+        method -> Nullable<Text>,
         order_number -> Integer,
-        folder_id -> Nullable<Integer>,
+        parent_id -> Nullable<Integer>,
     }
 }
 

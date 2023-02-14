@@ -19,11 +19,16 @@ let props = defineProps({
     group: {
         default: 'name',
         type: String
+    },
+    parent: {
+        default: null,
+        type: Number
     }
 })
 
-function test() {
-    console.log(records.value)
+function test(e: any, parent: any) {
+    console.log(parent)
+    console.log(e)
 }
 
 onMounted(async () => {
@@ -38,9 +43,9 @@ onMounted(async () => {
         style="min-height: 1px;"
         :list="props.modelValue"
         item-key="name"
-        :group="group"
-        @change="test"
-        :emptyInsertThreshold="70"
+        :group="props.group"
+        @change="test($event, props.parent)"
+        :emptyInsertThreshold="20"
     >
         <template #item="{ element }">
             <li>
@@ -48,8 +53,7 @@ onMounted(async () => {
                     <summary>
                         <SidebarItem :item="element" />
                     </summary>
-                    <nested-draggable v-if="element.items && element.items.length >= 0" :list="element.items" :group="group"/>
-                    <nested-draggable v-if="element.request && element.request.length >= 0" :list="element.request" group="request"/>
+                    <nested-draggable v-if="element.items && !element.method" :list="element.items" :group="props.group" :parent="element.id"/>
                 </details>
             </li>
         </template>

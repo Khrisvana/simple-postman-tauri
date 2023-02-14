@@ -16,6 +16,13 @@ pub fn request_list() -> Vec<query::request::MappedResult> {
     result
 }
 
+#[command]
+pub fn update_order(parent: Option<i32>, target_id: i32, index: i32) -> String {
+    let result = query::request::update_order(parent, target_id, index);
+
+    result
+}
+
 // #[command]
 // pub fn create_new_request() -> models::Request {
 //     let result = query::request::store_request();

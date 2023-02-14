@@ -6,6 +6,7 @@ import draggable from "vuedraggable";
 import { useSidebarStore } from "../../stores/sidebar";
 import SidebarItem from "./SidebarItem.vue";
 import SidebarNoitem from "./SidebarNoitem.vue";
+import { invoke } from '@tauri-apps/api/tauri';
 
 const emit = defineEmits(["update:modelValue"])
 const store = useSidebarStore();
@@ -26,9 +27,22 @@ let props = defineProps({
     }
 })
 
-function test(e: any, parent: any) {
-    console.log(parent)
-    console.log(e)
+async function updateOrder(e: any, parent: any) {
+    console.log(e);
+
+    let result = {};
+
+    if (e.added) {
+        let added = e.added;
+        result = { parent: parent, targetId:  added.element.id, index: added.newIndex};
+    }else if (e.moved) {
+        let moved = e.moved;
+        result = { parent: parent, targetId:  moved.element.id, index: moved.newIndex};
+    } else {
+        return //WIP: reorder removed item
+    }
+
+    await invoke('update_order', result);
 }
 
 onMounted(async () => {
@@ -44,7 +58,7 @@ onMounted(async () => {
         :list="props.modelValue"
         item-key="name"
         :group="props.group"
-        @change="test($event, props.parent)"
+        @change="updateOrder($event, props.parent)"
         :emptyInsertThreshold="20"
     >
         <template #item="{ element }">

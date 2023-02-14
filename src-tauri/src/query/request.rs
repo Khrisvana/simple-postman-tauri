@@ -1,10 +1,10 @@
 use diesel::prelude::*;
-use serde::{Serialize, Serializer};
+use serde::Serialize;
 use std::fmt;
 
 use crate::db::establish_connection;
-use crate::db::models::{Folder, NewRequest, Request};
-use crate::schema::requests;
+use crate::db::models::{NewRequest, Request};
+use crate::schema::requests::{self, order_number, parent_id};
 
 #[derive(Debug, Serialize)]
 pub struct RequestQueryResult {
@@ -72,8 +72,32 @@ fn add_child(parent: &Request, connection: &mut SqliteConnection) -> MappedResul
     parent_temp
 }
 
-pub fn update_order() {
-    
+pub fn update_order(parent: Option<i32>, target_id: i32, index: i32) -> String {
+    let connection = &mut establish_connection();
+
+    diesel::update(requests::table.find(target_id))
+        .set((parent_id.eq(parent), order_number.eq(index)))
+        .execute(connection)
+        .expect("unable to update order");
+
+    let other_child = requests::table
+        .filter(order_number.ge(index))
+        .filter(parent_id.eq(parent))
+        .filter(requests::id.ne(target_id))
+        .load::<Request>(connection)
+        .expect("cant get other child");
+
+    let mut target_index = index;
+    for other in other_child.into_iter() {
+        target_index += 1;
+        
+        diesel::update(requests::table.find(&other.id))
+            .set(order_number.eq(&target_index))
+            .execute(connection)
+            .expect("unable to update order");
+    }
+
+    "order updated".to_string()
 }
 
 pub fn get_request(id: i32) -> Request {

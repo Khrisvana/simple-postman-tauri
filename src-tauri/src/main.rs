@@ -11,7 +11,6 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 mod db;
 mod query;
 mod schema;
-mod cmd;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
 
@@ -24,13 +23,10 @@ fn main() {
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            cmd::get_request,
-            cmd::update_order,
-            // cmd::create_new_request,
-            cmd::get_folders,
-            cmd::create_new_folder,
-            cmd::get_folders_with_child,
-            cmd::request_list,
+            query::request::get_request,
+            query::request::update_order,
+            query::request::store_request,
+            query::request::request_list,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

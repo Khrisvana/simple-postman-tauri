@@ -11,40 +11,6 @@ pub struct FolderQueryResult {
     list: Vec<Folder>,
 }
 
-pub fn get_folders() -> FolderQueryResult {
-    let folder = folders::dsl::folders;
-    let connection = &mut establish_connection();
-
-    let result = folder
-        .load::<Folder>(connection)
-        .expect("Error loading requests");
-
-    FolderQueryResult { list: result }
-}
-
-pub fn get_folder_childs() -> Vec<(Folder, Folder)> {
-    let folder_alias = alias!(folders as the_folder);
-
-    let connection = &mut establish_connection();
-
-    // let parent = folders::table
-    //     .filter(parent_id.eq(None))
-    //     .get_results::<Folder>(connection); 
-
-    let result = folders::table
-        .inner_join(folder_alias.on(folders::id.eq(folder_alias.field(folders::parent_id).assume_not_null())))
-        .select((folders::all_columns, folder_alias.fields(folders::all_columns)))
-        .load::<(Folder, Folder)>(connection)
-        .unwrap();
- 
-    // for (folder, parent) in parents {
-
-    // }
-    
-
-    result
-} 
-
 pub fn create_new_folder() -> Folder {
     let folder = folders::dsl::folders;
     let folder_id = folders::dsl::id;

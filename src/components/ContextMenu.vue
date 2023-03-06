@@ -1,13 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from "vue"
 
-const props = defineProps({
-    items: {
-        type: Array,
-        default: [],
-    },
-})
-
 let me = ref()
 let display = ref({
     name: "hidden",
@@ -47,15 +40,11 @@ onBeforeUnmount(() => {
 
 <template>
     <div
-        class="bg-white absolute p-3 rounded drop-shadow w-max"
+        class="bg-white absolute py-2 rounded drop-shadow w-max"
         :class="display.name"
         :style="{ left: `${display.cursorX}px`, top: `${display.cursorY}px` }"
         ref="me"
     >
-        <div v-for="(item, index) in items" :key="index">
-            <!-- <i>[Ic]</i> -->
-            {{ item.name }}
-            <!-- <ContextMenu :items="item.child"> -->
-        </div>
+        <slot/>
     </div>
 </template>

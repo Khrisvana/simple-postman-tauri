@@ -2,6 +2,7 @@ use diesel::prelude::*;
 use serde::Serialize;
 use std::fmt;
 
+use tauri::{command};
 use crate::db::establish_connection;
 use crate::db::models::{NewRequest, Request};
 use crate::schema::requests::{self, order_number, parent_id};
@@ -33,6 +34,7 @@ pub struct MappedResult {
     pub items: Option<Vec<MappedResult>>,
 }
 
+#[command]
 pub fn request_list() -> Vec<MappedResult> {
     let connection = &mut establish_connection();
     let first_folder: Vec<Request> = requests::table
@@ -72,6 +74,7 @@ fn add_child(parent: &Request, connection: &mut SqliteConnection) -> MappedResul
     parent_temp
 }
 
+#[command]
 pub fn update_order(parent: Option<i32>, target_id: i32, index: i32) -> String {
     let connection = &mut establish_connection();
 
@@ -100,6 +103,7 @@ pub fn update_order(parent: Option<i32>, target_id: i32, index: i32) -> String {
     "order updated".to_string()
 }
 
+#[command]
 pub fn get_request(id: i32) -> Request {
     let connection = &mut establish_connection();
 
@@ -111,29 +115,37 @@ pub fn get_request(id: i32) -> Request {
     request
 }
 
-// pub fn store_request() -> Request {
-//     let request = requests::dsl::requests;
-//     let request_id = requests::dsl::id;
+#[command]
+pub fn store_request(parent: Option<i32>, order: i32, is_folder: bool) -> Request {
+    let request = requests::dsl::requests;
+    let request_id = requests::dsl::id;
 
-//     let connection = &mut establish_connection();
+    let connection = &mut establish_connection();
+    let mut method: Option<String> = Some(Methods::GET.to_string());
+    let mut name: String = "New Request".to_string();
 
-//     let new_request = NewRequest {
-//         method: Methods::GET.to_string(),
-//         name: Some("New Request".to_string()),
-//         url: None,
-//         folder_id: None,
-//         order_number: 1,
-//     };
+    if is_folder {
+        method = None;
+        name = "New Folder".to_string();
+    }
+    
+    let new_request = NewRequest {
+        method: method,
+        name: name,
+        url: None,
+        order_number: order,
+        parent_id: parent
+    };
 
-//     diesel::insert_into(request)
-//         .values(&new_request)
-//         .execute(connection)
-//         .expect("Error saving request");
+    diesel::insert_into(request)
+        .values(&new_request)
+        .execute(connection)
+        .expect("Error saving request");
 
-//     let result = request
-//         .order(request_id.desc())
-//         .first::<Request>(connection)
-//         .unwrap();
+    let result = request
+        .order(request_id.desc())
+        .first::<Request>(connection)
+        .unwrap();
 
-//     result
-// }
+    result
+}

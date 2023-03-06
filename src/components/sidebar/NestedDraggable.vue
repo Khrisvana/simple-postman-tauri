@@ -5,7 +5,6 @@ import Sortable from "sortablejs"
 import draggable from "vuedraggable"
 import { useSidebarStore } from "../../stores/sidebar"
 import SidebarItem from "./SidebarItem.vue"
-import SidebarNoitem from "./SidebarNoitem.vue"
 import { invoke } from "@tauri-apps/api/tauri"
 import ContextMenu from "../ContextMenu.vue"
 
@@ -28,9 +27,19 @@ let props = defineProps({
     },
 })
 
-async function updateOrder(e: any, parent: any) {
-    console.log(e)
+function contextMenuItem(show: Boolean) {
+    let menuItems: Array<String> = ["Edit", "Delete"];
 
+    if (show) {
+        menuItems.unshift('New Folder', 'New Request');
+    }
+
+    return menuItems;
+}
+
+async function updateOrder(e: any, parent: any) {
+    document.dispatchEvent(new Event('click'));
+    
     let result = {}
 
     if (e.added) {
@@ -51,40 +60,37 @@ async function updateOrder(e: any, parent: any) {
         return //WIP: reorder removed item
     }
 
-    await invoke("update_order", result)
+    try {
+        await invoke("update_order", result)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function addNewItems(parent: Number|null, order: Number, isFolder: Boolean) {
+    document.dispatchEvent(new Event('click'));
+
+    try {
+        let payload = {
+            parent: parent, 
+            order: order, 
+            isFolder: isFolder
+        }
+        
+        await invoke("store_request", payload);
+        await store.getRecords()
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 let sidebarItemContextMenu = ref()
-const folderMenuItem = [
-    {
-        name: "New Folder",
-    },
-    {
-        name: "New Request",
-    },
-    {
-        name: "Edit",
-    },
-    {
-        name: "Delete",
-    },
-]
-
-const requestMenuItem = [
-    {
-        name: "Edit",
-    },
-    {
-        name: "Delete",
-    },
-]
 
 function triggerContextMenu(event: Event) {
     sidebarItemContextMenu.value.showMenu(event)
 }
 
 onMounted(async () => {
-    await console.log(props.modelValue)
 })
 </script>
 
@@ -116,8 +122,9 @@ onMounted(async () => {
                     />
                     <ContextMenu
                         ref="sidebarItemContextMenu"
-                        :items="element.method ? requestMenuItem : folderMenuItem"
-                    />
+                    >
+                        <div class="w-full px-3 hover:bg-gray-100 text-sm py-1 cursor-pointer font-thin" v-for="(menu, index) in contextMenuItem(!element.methhod)" :key="index">{{ menu }}</div>
+                    </ContextMenu>
                 </details>
             </li>
         </template>

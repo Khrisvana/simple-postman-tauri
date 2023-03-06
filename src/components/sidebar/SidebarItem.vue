@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from "@vue/runtime-core"
+import { onMounted, ref } from "@vue/runtime-core"
 
 const props = defineProps({
     item: {
@@ -8,13 +8,15 @@ const props = defineProps({
     },
 })
 
+let currentEditedMenu = ref(0)
+
 onMounted(async () => {})
 </script>
 
 <template>
     <span
         v-if="!item.method"
-        class="folder flex items-center text-sm py-2 pl-2 h-auto overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out gap-3"
+        class="folder flex items-center text-sm py-2 pl-2 h-auto overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out gap-3 cursor-pointer"
         :to="{ name: 'Request', params: { id: item.id } }"
         data-mdb-ripple="true"
         data-mdb-ripple-color="dark"
@@ -45,7 +47,7 @@ onMounted(async () => {})
 
     <router-link
         v-else
-        class="request flex items-center text-sm py-2 pl-2 h-auto overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out gap-3"
+        class="request flex items-center text-sm py-2 pl-2 h-auto overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap hover:text-gray-900 hover:bg-gray-100 transition duration-300 ease-in-out gap-3 cursor-pointer"
         :to="{ name: 'Request', params: { id: item.id } }"
         data-mdb-ripple="true"
         data-mdb-ripple-color="dark"

@@ -26,20 +26,29 @@ let props = defineProps({
         type: Number,
     },
 })
+let showChild = ref(true)
+let menuItems = ref()
+let activeElement = ref()
 
-function contextMenuItem(show: Boolean) {
-    let menuItems: Array<String> = ["Edit", "Delete"];
+function contextMenuItem(show: Boolean) : Array<Object> {
+    let menuItems: Array<Object> = [
+        { title: "Edit", class: "text-black", method: "editItem" },
+        { title: "Delete", class: "text-red-500", method: "deleteItem" },
+    ]
 
     if (show) {
-        menuItems.unshift('New Folder', 'New Request');
+        menuItems.unshift(
+            { title: "New Folder", class: "text-black", method: "newFolder" },
+            { title: "New Request", class: "text-black", method: "newRequest" }
+        )
     }
 
-    return menuItems;
+    return menuItems
 }
 
 async function updateOrder(e: any, parent: any) {
-    document.dispatchEvent(new Event('click'));
-    
+    document.dispatchEvent(new Event("click"))
+
     let result = {}
 
     if (e.added) {
@@ -63,35 +72,46 @@ async function updateOrder(e: any, parent: any) {
     try {
         await invoke("update_order", result)
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
 }
 
-async function addNewItems(parent: Number|null, order: Number, isFolder: Boolean) {
-    document.dispatchEvent(new Event('click'));
+async function addNewItems(
+    parent: Number | null,
+    order: Number,
+    isFolder: Boolean
+) {
+    document.dispatchEvent(new Event("click"))
 
     try {
         let payload = {
-            parent: parent, 
-            order: order, 
-            isFolder: isFolder
+            parent: parent,
+            order: order,
+            isFolder: isFolder,
         }
-        
-        await invoke("store_request", payload);
+
+        await invoke("store_request", payload)
         await store.getRecords()
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
 }
 
 let sidebarItemContextMenu = ref()
 
-function triggerContextMenu(event: Event) {
+function triggerContextMenu(event: Event, status: string|null, element: Object) {
+    event.preventDefault()
+    
     sidebarItemContextMenu.value.showMenu(event)
+    menuItems.value = contextMenuItem(!status)
+    activeElement.value = element
 }
 
-onMounted(async () => {
-})
+function menuHandler(method: string, item: Object) {
+    console.log(method, item)
+}
+
+onMounted(async () => {})
 </script>
 
 <template>
@@ -107,36 +127,32 @@ onMounted(async () => {
     >
         <template #item="{ element }">
             <li>
-                <details open>
-                    <summary>
-                        <SidebarItem
-                            :item="element"
-                            @contextmenu.prevent="triggerContextMenu"
-                        />
-                    </summary>
-                    <nested-draggable
-                        v-if="element.items && !element.method"
-                        :list="element.items"
-                        :group="props.group"
-                        :parent="element.id"
-                    />
-                    <ContextMenu
-                        ref="sidebarItemContextMenu"
+                <SidebarItem :item="element" @contextmenu.stop="triggerContextMenu($event, element.method, element)" @click.prevent="showChild = !showChild" :class="{'open': showChild}"/>
+                <nested-draggable
+                    v-if="!element.method"
+                    :class="{'show': showChild, 'hidden': !showChild}"
+                    :list="element.items"
+                    :group="props.group"
+                    :parent="element.id"
+                />
+                <ContextMenu ref="sidebarItemContextMenu">
+                    <div
+                        class="w-full px-3 hover:bg-gray-100 text-sm py-1 cursor-pointer font-thin"
+                        :class="menu.class"
+                        v-for="(menu, index) in menuItems"
+                        :key="index"
+                        @click="menuHandler(menu.method, activeElement)"
                     >
-                        <div class="w-full px-3 hover:bg-gray-100 text-sm py-1 cursor-pointer font-thin" v-for="(menu, index) in contextMenuItem(!element.methhod)" :key="index">{{ menu }}</div>
-                    </ContextMenu>
-                </details>
+                        {{ menu.title }}
+                    </div>
+                </ContextMenu>
             </li>
         </template>
     </draggable>
 </template>
 
 <style>
-summary::marker {
-    display: none !important;
-    content: "";
-}
-details[open] > summary span .collapse-indicator {
+span.open .collapse-indicator {
     transform: rotate(90deg);
 }
 </style>

@@ -80,34 +80,6 @@ function changeOrder() {
     >
     <ul class="relative">
       <NestedDraggable class="w-full" v-model="records" group="folder"/>
-
-      <!-- <li class="relative">
-        <span
-          class="
-            flex
-            items-center
-            text-sm
-            py-2
-            px-6
-            h-auto
-            overflow-hidden
-            text-gray-700 text-ellipsis
-            whitespace-nowrap
-            hover:text-gray-900 hover:bg-gray-100
-            transition
-            duration-300
-            ease-in-out
-            gap-3
-            cursor-pointer
-          "
-          href="#"
-          data-mdb-ripple="true"
-          data-mdb-ripple-color="dark"
-          @click="store.addNewRequest"
-          ><span class="uppercase text-green-500 font-medium">+</span>Add
-          Request</span
-        >
-      </li> --> 
     </ul>
   </div>
 </template>
